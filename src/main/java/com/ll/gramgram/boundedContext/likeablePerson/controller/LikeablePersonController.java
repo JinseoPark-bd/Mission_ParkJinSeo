@@ -65,7 +65,6 @@ public class LikeablePersonController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") Long id) {
-        likeablePersonService.delete(id);
-        return "redirect:/likeablePerson/list";
+        return rq.redirectWithMsg("/likeablePerson/list","삭제되었습니다.");
     }
 }

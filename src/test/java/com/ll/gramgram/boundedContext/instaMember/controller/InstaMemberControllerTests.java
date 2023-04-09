@@ -3,6 +3,7 @@ package com.ll.gramgram.boundedContext.instaMember.controller;
 
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
+import com.ll.gramgram.boundedContext.likeablePerson.controller.LikeablePersonController;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
@@ -134,5 +135,22 @@ public class InstaMemberControllerTests {
         Member member = memberService.findByUsername("user1").orElseThrow();
 
         assertThat(member.getInstaMember()).isEqualTo(instaMember);
+    }
+
+    @Test
+    @DisplayName("호감 삭제")
+    @WithUserDetails("user3")
+    void t006() throws Exception {
+        //WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/likeablePerson/delete/1"))
+                .andDo(print());
+
+        //THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().method("delete"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/likeablePerson/list**"));
     }
 }
