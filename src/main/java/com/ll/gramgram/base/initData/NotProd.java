@@ -28,6 +28,8 @@ public class NotProd {
             //이거 안적으면 로그인해도 작동안된다.
             Member memberUser5ByKakao = memberService.whenSocialLogin("KAKAO", "KAKAO__2731659195").getData();
             Member memberUser6ByGoogle = memberService.whenSocialLogin("GOOGLE", "GOOGLE__103625524947355104336").getData();
+            Member memberUser7ByNaver = memberService.whenSocialLogin("NAVER", "NAVER__{id=IbgKz16hlfkcqbN6iKWmbQJYC7837HqyBmw-CAfl4LI, email=wlstjdhkd@naver.com, name=박진서}").getData();
+
 
             instaMemberService.connect(memberUser2, "insta_user2", "M");
             instaMemberService.connect(memberUser3, "insta_user3", "W");
@@ -35,6 +37,13 @@ public class NotProd {
 
             likeablePersonService.like(memberUser3, "insta_user4", 1);
             likeablePersonService.like(memberUser3, "insta_user100", 2);
+            likeablePersonService.like(memberUser3, "insta_user101", 3);
+            likeablePersonService.like(memberUser3, "insta_user102", 1);
+            likeablePersonService.like(memberUser3, "insta_user103", 2);
+            likeablePersonService.like(memberUser3, "insta_user104", 3);
+            likeablePersonService.like(memberUser3, "insta_user105", 1);
+            likeablePersonService.like(memberUser3, "insta_user106", 2);
+            likeablePersonService.like(memberUser3, "insta_user107", 3);
         };
     }
 }
