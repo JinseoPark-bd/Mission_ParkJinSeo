@@ -1,5 +1,6 @@
 package com.ll.gramgram.boundedContext.likeablePerson.service;
 
+import com.ll.gramgram.base.appConfig.AppConfig;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
@@ -30,6 +31,34 @@ public class LikeablePersonService {
         if (member.getInstaMember().getUsername().equals(username)) {
             return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
         }
+
+        // 케이스5) 호감상대 인원 수 10명 제한
+        if(member.getInstaMember().getFromLikeablePeople().size() >= AppConfig.getLikeablePersonFromMax()) {
+            return RsData.of("F-1", "최대인원 10명을 초과하였습니다.");
+        }
+
+        // 호감 목록에 이미 존재하는 회원인지 조회
+        LikeablePerson checkLikeablePerson = member
+                .getInstaMember()
+                .getFromLikeablePeople()
+                .stream()
+                .filter(lp -> lp.getToInstaMember().getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
+
+        // 이미 존재하는 경우
+        if(checkLikeablePerson != null) {
+
+            // 케이스4) 호감타입도 동일한 경우 -> 등록되지 않는다.
+            if(checkLikeablePerson.getAttractiveTypeCode() == attractiveTypeCode) {
+                return RsData.of("F-1", "이미 존재하는 호감상대입니다.");
+
+            } else { // 케이스6) 호감타입은 다른 경우 -> 호감타입 수정
+                checkLikeablePerson.setAttractiveTypeCode(attractiveTypeCode);
+                return RsData.of("S-2", "호감타입이 수정되었습니다.");
+            }
+        }
+
 
         InstaMember fromInstaMember = member.getInstaMember();
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
