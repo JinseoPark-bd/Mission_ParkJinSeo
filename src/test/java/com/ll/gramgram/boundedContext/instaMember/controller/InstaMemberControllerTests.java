@@ -3,8 +3,6 @@ package com.ll.gramgram.boundedContext.instaMember.controller;
 
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
-import com.ll.gramgram.boundedContext.likeablePerson.controller.LikeablePersonController;
-import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +42,7 @@ public class InstaMemberControllerTests {
     void t001() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/instaMember/connect"))
+                .perform(get("/usr/instaMember/connect"))
                 .andDo(print());
 
         // THEN
@@ -62,7 +60,7 @@ public class InstaMemberControllerTests {
                         <input type="radio" name="gender" value="M"
                         """.stripIndent().trim())))
                 .andExpect(content().string(containsString("""
-                        <input type="submit" value="정보입력"
+                        id="btn-insta-member-connect-1"
                         """.stripIndent().trim())));
     }
 
@@ -71,7 +69,7 @@ public class InstaMemberControllerTests {
     void t002() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/instaMember/connect"))
+                .perform(get("/usr/instaMember/connect"))
                 .andDo(print());
 
         // THEN
@@ -79,7 +77,7 @@ public class InstaMemberControllerTests {
                 .andExpect(handler().handlerType(InstaMemberController.class))
                 .andExpect(handler().methodName("showConnect"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/member/login**"));
+                .andExpect(redirectedUrlPattern("**/usr/member/login**"));
     }
 
     @Test
@@ -88,7 +86,7 @@ public class InstaMemberControllerTests {
     void t003() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/instaMember/connect")
+                .perform(post("/usr/instaMember/connect")
                         .with(csrf()) // CSRF 키 생성
                         .param("username", "abc123")
                         .param("gender", "W")
@@ -100,7 +98,7 @@ public class InstaMemberControllerTests {
                 .andExpect(handler().handlerType(InstaMemberController.class))
                 .andExpect(handler().methodName("connect"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/likeablePerson/add**"));
+                .andExpect(redirectedUrlPattern("/usr/likeablePerson/like**"));
 
         InstaMember instaMember = instaMemberService.findByUsername("abc123").orElse(null);
 
@@ -115,7 +113,7 @@ public class InstaMemberControllerTests {
     void t004() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/instaMember/connect")
+                .perform(post("/usr/instaMember/connect")
                         .with(csrf()) // CSRF 키 생성
                         .param("username", "insta_user100")
                         .param("gender", "M")
@@ -127,7 +125,7 @@ public class InstaMemberControllerTests {
                 .andExpect(handler().handlerType(InstaMemberController.class))
                 .andExpect(handler().methodName("connect"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/likeablePerson/add**"));
+                .andExpect(redirectedUrlPattern("/usr/likeablePerson/like**"));
 
         InstaMember instaMember = instaMemberService.findByUsername("insta_user100").orElse(null);
 
