@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -133,12 +134,37 @@ public class LikeablePersonController {
             Stream<LikeablePerson> likeablePeopleStream = instaMember.getToLikeablePeople().stream();
 
             if(!gender.isEmpty()) {
-                likeablePeopleStream = likeablePeopleStream.filter(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals(gender));
+                likeablePeopleStream = likeablePeopleStream
+                        .filter(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals(gender));
             }
 
             if(attractiveTypeCode != 0) {
-                likeablePeopleStream = likeablePeopleStream.filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == attractiveTypeCode);
+                likeablePeopleStream = likeablePeopleStream
+                        .filter(likeablePerson -> likeablePerson.getAttractiveTypeCode() == attractiveTypeCode);
             }
+
+            switch(sortCode) {
+                case 2:
+                    likeablePeopleStream = likeablePeopleStream.sorted(
+                            Comparator.comparing(LikeablePerson::getId)
+                    );
+                    break;
+                case 3:
+                    likeablePeopleStream = likeablePeopleStream.sorted(
+                            Comparator.comparing(lp -> ((LikeablePerson) lp).getFromInstaMember().getLikes()).reversed()
+                    );
+                    break;
+                case 4:
+                    likeablePeopleStream = likeablePeopleStream.sorted(
+                            Comparator.comparing(lp -> lp.getFromInstaMember().getLikes())
+                    );
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    break;
+            }
+
 
             List<LikeablePerson> likeablePeople = likeablePeopleStream.collect(Collectors.toList());
 
