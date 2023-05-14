@@ -10,11 +10,13 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -124,27 +126,24 @@ public class LikeablePersonController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/toList")
-    public String showToList(Model model, String gender, String attractiveTypeCode, String sortCode) {
+    public String showToList(Model model, ToListForm toListForm) {
         InstaMember instaMember = rq.getMember().getInstaMember();
 
         // 인스타인증을 했는지 체크
         if (instaMember != null) {
             // 해당 인스타회원이 좋아하는 사람들 목록
-            Stream<LikeablePerson> likeablePeopleStream = instaMember.getToLikeablePeople().stream();
-
-            if(gender != null) {
-                if(gender == "M") {
-                    likeablePeopleStream = likeablePeopleStream.filter(e -> e.getFromInstaMember().getGender() == "M");
-                } else {
-                    likeablePeopleStream = likeablePeopleStream.filter(e -> e.getFromInstaMember().getGender() == "W");
-                }
-            }
-
-            List<LikeablePerson> likeablePeople = likeablePeopleStream.collect(Collectors.toList());
+            List<LikeablePerson> likeablePeople = likeablePersonService.findByToInstaMember(instaMember, toListForm.gender, toListForm.attractiveTypeCode, toListForm.sortCode);
 
             model.addAttribute("likeablePeople", likeablePeople);
         }
 
         return "usr/likeablePerson/toList";
+    }
+
+    @Setter
+    public static class ToListForm {
+        private String gender = "";
+        private int attractiveTypeCode = 0;
+        private int sortCode = 1;
     }
 }
